@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"net/url"
@@ -48,12 +49,12 @@ func (c *Cache) Retrieve(key string) (CacheItem, bool) {
 
 	// 2: If item not found, return empty CacheItem / false
 	if !ok {
-		log.Println("cache: miss")
+		log.Println("\033[31mCache\033[0m: Miss")
 		return CacheItem{}, false
 	}
 
 	// 3: if item is found, return the item and true
-	log.Println("cache: hit")
+	log.Println("\033[31mCache\033[0m: Hit")
 	return item, true
 }
 
@@ -64,7 +65,8 @@ func (c *Cache) Store(url string, body []byte) error {
 
 	// 1: Ensure there is space to store a new item
 	if len(c.Items) >= c.MaxSize {
-		log.Println("cache: max size reached, consider eviction")
+		log.Println("\033[31mCache\033[0m: Max size reached, consider eviction")
+		return errors.New("cache full")
 	}
 
 	// 2: Create the CacheItem
@@ -73,13 +75,13 @@ func (c *Cache) Store(url string, body []byte) error {
 		// Header:     resp.Header,
 		Body:      body,
 		CreatedAt: time.Now(),
-		Expires:   time.Now().Add(c.Expiry),
+		Expires:   time.Now().Add(c.Expiry * time.Second),
 	}
 
 	// 3: Store the item in memory
-	log.Printf("cache: storing %v\n", url)
+	log.Printf("\033[31mCache\033[0m: Storing %v\n", url)
 	c.Items[url] = item
-	log.Println("cache: stored")
+	log.Println("\033[31mCache\033[0m: Stored")
 
 	return nil
 }
@@ -101,7 +103,7 @@ func (c *Cache) Clean() {
 
 // Audit runs once every c.Interval and calls Clean()
 func (c *Cache) Audit() {
-	ticker := time.NewTicker(c.Interval)
+	ticker := time.NewTicker(c.Interval * time.Second)
 	go func() {
 		for range ticker.C {
 			c.Mu.Lock()

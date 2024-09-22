@@ -8,6 +8,7 @@ The application uses a single command, `serve`, which tells the application wher
 ## Commands
 
 1. Serve
+   
    `serve` contains all of the logic for creating the http server and cache. There are flags which can be passed to the application to specify the port, the number of items the cache can hold, how often the items should be cleaned up and how long they will persist.
 
 - `--port / -p`: Pass the port to this application you wish to serve requests on. Default is 3000.

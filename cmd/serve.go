@@ -18,7 +18,7 @@ var serveCmd = &cobra.Command{
 	Short: "Start the server",
 	Long:  `Starts a new http.Server to handle RESTful calls and cache responses`,
 	Run: func(cmd *cobra.Command, args []string) {
-		API := api.New(cacheSize, time.Second*time.Duration(cacheExpiry), time.Second*time.Duration(cacheInterval))
+		API := api.New(cacheSize, time.Duration(cacheExpiry), time.Duration(cacheInterval))
 		API.Serve(port)
 	},
 }

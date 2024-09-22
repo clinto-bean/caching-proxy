@@ -76,7 +76,7 @@ func (a *API) HandlerShowAllItems(w http.ResponseWriter, r *http.Request) {
 		var decodedBody map[string]interface{}
 		err := json.Unmarshal(v.Body, &decodedBody)
 		if err != nil {
-			log.Printf("Error decoding body for key %v: %v", k, err)
+			log.Printf("\033[32mAPI\033[0m: Error decoding body for key %v: %v", k, err)
 			decodedBody = map[string]interface{}{"rawBody": string(v.Body)}
 		}
 		items[k] = decodedBody
@@ -108,7 +108,7 @@ func (a *API) HandlerShutdown(w http.ResponseWriter, r *http.Request) {
 		SendJSON(w, http.StatusOK, []byte("shutting down"))
 		err := a.Server.Close()
 		if err != nil {
-			log.Fatalf("Error shutting down: %s", err.Error())
+			log.Fatalf("\033[32mAPI\033[0m: Error shutting down: %s", err.Error())
 		}
 	}
 	SendJSON(w, http.StatusUnauthorized, []byte("not authorized"))
